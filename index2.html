@@ -1,0 +1,1908 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Digitale Signatur - Interaktiver Lernpfad</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+
+        header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        header p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        nav {
+            background: #f8f9fa;
+            padding: 20px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+            border-bottom: 3px solid #667eea;
+        }
+
+        .nav-btn {
+            padding: 12px 24px;
+            background: white;
+            border: 2px solid #667eea;
+            color: #667eea;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .nav-btn:hover {
+            background: #667eea;
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .nav-btn.active {
+            background: #667eea;
+            color: white;
+        }
+
+        .content {
+            padding: 40px;
+            min-height: 500px;
+        }
+
+        .section {
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .section.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        h2 {
+            color: #667eea;
+            margin-bottom: 20px;
+            font-size: 2em;
+            border-bottom: 3px solid #667eea;
+            padding-bottom: 10px;
+        }
+
+        h3 {
+            color: #764ba2;
+            margin-top: 30px;
+            margin-bottom: 15px;
+            font-size: 1.5em;
+        }
+
+        .info-box {
+            background: #f0f4ff;
+            border-left: 5px solid #667eea;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+
+        .warning-box {
+            background: #fff3cd;
+            border-left: 5px solid #ffc107;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+
+        .success-box {
+            background: #d4edda;
+            border-left: 5px solid #28a745;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+
+        .interactive-box {
+            background: white;
+            border: 2px solid #667eea;
+            border-radius: 10px;
+            padding: 25px;
+            margin: 20px 0;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        input[type="text"],
+        input[type="number"],
+        textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 1em;
+            margin: 10px 0;
+            transition: border-color 0.3s ease;
+        }
+
+        input[type="text"]:focus,
+        input[type="number"]:focus,
+        textarea:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        button {
+            padding: 12px 30px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            margin: 5px;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, #6c757d 0%, #495057 100%);
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+        }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .grid-3 {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        @media (max-width: 768px) {
+            .grid-2,
+            .grid-3 {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .step {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 15px 0;
+            border-left: 5px solid #667eea;
+        }
+
+        .step-number {
+            display: inline-block;
+            width: 35px;
+            height: 35px;
+            background: #667eea;
+            color: white;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 35px;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+
+        .formula {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            margin: 15px 0;
+            overflow-x: auto;
+        }
+
+        .result {
+            background: #d4edda;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            font-weight: bold;
+            color: #155724;
+        }
+
+        .error {
+            background: #f8d7da;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            font-weight: bold;
+            color: #721c24;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background: #667eea;
+            color: white;
+            font-weight: 600;
+        }
+
+        tr:hover {
+            background: #f8f9fa;
+        }
+
+        .key-display {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            word-break: break-all;
+            margin: 10px 0;
+        }
+
+        .visual-diagram {
+            background: white;
+            border: 2px solid #667eea;
+            border-radius: 10px;
+            padding: 30px;
+            margin: 20px 0;
+            text-align: center;
+        }
+
+        .arrow {
+            font-size: 2em;
+            color: #667eea;
+            margin: 10px 0;
+        }
+
+        .box {
+            display: inline-block;
+            padding: 15px 25px;
+            background: #f0f4ff;
+            border: 2px solid #667eea;
+            border-radius: 10px;
+            margin: 10px;
+            font-weight: 600;
+        }
+
+        .hash-option {
+            display: inline-block;
+            padding: 10px 20px;
+            margin: 5px;
+            background: white;
+            border: 2px solid #667eea;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .hash-option:hover {
+            background: #f0f4ff;
+        }
+
+        .hash-option.selected {
+            background: #667eea;
+            color: white;
+        }
+
+        .copy-btn {
+            padding: 8px 16px;
+            font-size: 0.9em;
+            margin-left: 10px;
+        }
+
+        label {
+            display: block;
+            margin-top: 15px;
+            margin-bottom: 5px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .inline-label {
+            display: inline-block;
+            margin-right: 10px;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #ddd;
+        }
+
+        .tab {
+            padding: 12px 24px;
+            background: transparent;
+            border: none;
+            border-bottom: 3px solid transparent;
+            color: #666;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .tab:hover {
+            color: #667eea;
+        }
+
+        .tab.active {
+            color: #667eea;
+            border-bottom-color: #667eea;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 30px;
+            background: #f0f4ff;
+            border-radius: 15px;
+            overflow: hidden;
+            margin: 20px 0;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            transition: width 0.5s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🔐 Digitale Signatur</h1>
+            <p>Interaktiver Lernpfad zu Kryptographie und digitalen Signaturen</p>
+        </header>
+
+        <nav>
+            <button class="nav-btn active" onclick="showSection('home')">🏠 Start</button>
+            <button class="nav-btn" onclick="showSection('rsa-basics')">🔑 RSA Grundlagen</button>
+            <button class="nav-btn" onclick="showSection('rsa-practice')">✏️ RSA Übung</button>
+            <button class="nav-btn" onclick="showSection('hash')"># Hash-Funktionen</button>
+            <button class="nav-btn" onclick="showSection('signature')">✍️ Digitale Signatur</button>
+            <button class="nav-btn" onclick="showSection('practice')">🎯 Praxis-Labor</button>
+        </nav>
+
+        <div class="content">
+            <!-- HOME SECTION -->
+            <div id="home" class="section active">
+                <h2>Willkommen zum Lernpfad: Digitale Signatur</h2>
+                
+                <div class="info-box">
+                    <h3>📚 Was lernst du hier?</h3>
+                    <p>In diesem interaktiven Lernpfad wirst du verstehen, wie digitale Signaturen funktionieren und warum sie für sichere Kommunikation unverzichtbar sind.</p>
+                </div>
+
+                <h3>🎯 Lernziele</h3>
+                <div class="grid-2">
+                    <div class="interactive-box">
+                        <h4>🔑 RSA-Verschlüsselung</h4>
+                        <p>Wiederholung und Vertiefung des RSA-Algorithmus mit praktischen Beispielen</p>
+                    </div>
+                    <div class="interactive-box">
+                        <h4># Hash-Funktionen</h4>
+                        <p>Verstehen, wie Hash-Funktionen Daten in eindeutige Fingerabdrücke umwandeln</p>
+                    </div>
+                    <div class="interactive-box">
+                        <h4>✍️ Digitale Signaturen</h4>
+                        <p>Lernen, wie man Nachrichten signiert und Signaturen verifiziert</p>
+                    </div>
+                    <div class="interactive-box">
+                        <h4>🎯 Praktische Anwendung</h4>
+                        <p>Selbstständiges Erstellen und Prüfen von digitalen Signaturen</p>
+                    </div>
+                </div>
+
+                <h3>🗺️ Dein Lernweg</h3>
+                <div class="step">
+                    <span class="step-number">1</span>
+                    <strong>RSA Grundlagen:</strong> Wiederhole die Funktionsweise von RSA und asymmetrischer Verschlüsselung
+                </div>
+                <div class="step">
+                    <span class="step-number">2</span>
+                    <strong>RSA Übung:</strong> Berechne selbst ein RSA-Schlüsselpaar und verschlüssele die Nachricht "HI"
+                </div>
+                <div class="step">
+                    <span class="step-number">3</span>
+                    <strong>Hash-Funktionen:</strong> Lerne, wie Hash-Funktionen funktionieren und probiere verschiedene Algorithmen aus
+                </div>
+                <div class="step">
+                    <span class="step-number">4</span>
+                    <strong>Digitale Signatur:</strong> Verstehe das Prinzip der digitalen Signatur und wie sie Authentizität garantiert
+                </div>
+                <div class="step">
+                    <span class="step-number">5</span>
+                    <strong>Praxis-Labor:</strong> Wende alles Gelernte in einem interaktiven Labor an
+                </div>
+
+                <div class="warning-box">
+                    <h3>💡 Tipp</h3>
+                    <p>Du kannst jederzeit zwischen den Abschnitten wechseln. Nutze die Navigation oben, um zu einem bestimmten Thema zurückzukehren!</p>
+                </div>
+            </div>
+
+            <!-- RSA BASICS SECTION -->
+            <div id="rsa-basics" class="section">
+                <h2>🔑 RSA Grundlagen</h2>
+                
+                <div class="info-box">
+                    <h3>Was ist RSA?</h3>
+                    <p>RSA ist ein asymmetrisches Verschlüsselungsverfahren, das auf der Schwierigkeit basiert, große Zahlen zu faktorisieren. Es verwendet ein Schlüsselpaar: einen öffentlichen Schlüssel zum Verschlüsseln und einen privaten Schlüssel zum Entschlüsseln.</p>
+                </div>
+
+                <h3>🔐 Das Schlüsselpaar</h3>
+                <div class="grid-2">
+                    <div class="interactive-box">
+                        <h4>🔓 Öffentlicher Schlüssel (Public Key)</h4>
+                        <p><strong>Besteht aus:</strong> (e, n)</p>
+                        <ul>
+                            <li>Wird öffentlich geteilt</li>
+                            <li>Dient zum Verschlüsseln von Nachrichten</li>
+                            <li>Kann von jedem verwendet werden</li>
+                        </ul>
+                    </div>
+                    <div class="interactive-box">
+                        <h4>🔒 Privater Schlüssel (Private Key)</h4>
+                        <p><strong>Besteht aus:</strong> (d, n)</p>
+                        <ul>
+                            <li>Wird geheim gehalten</li>
+                            <li>Dient zum Entschlüsseln von Nachrichten</li>
+                            <li>Nur der Besitzer kennt ihn</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <h3>📐 Schlüsselerstellung - Die Schritte</h3>
+                
+                <div class="step">
+                    <span class="step-number">1</span>
+                    <strong>Wähle zwei Primzahlen p und q</strong>
+                    <div class="formula">
+                        Beispiel: p = 5, q = 17
+                    </div>
+                </div>
+
+                <div class="step">
+                    <span class="step-number">2</span>
+                    <strong>Berechne n = p × q</strong>
+                    <div class="formula">
+                        n = 5 × 17 = 85
+                    </div>
+                    <p>n ist Teil beider Schlüssel und bestimmt die maximale Nachrichtengröße</p>
+                </div>
+
+                <div class="step">
+                    <span class="step-number">3</span>
+                    <strong>Berechne φ(n) = (p-1) × (q-1)</strong>
+                    <div class="formula">
+                        φ(n) = (5-1) × (17-1) = 4 × 16 = 64
+                    </div>
+                    <p>φ(n) ist die Eulersche Phi-Funktion</p>
+                </div>
+
+                <div class="step">
+                    <span class="step-number">4</span>
+                    <strong>Wähle e mit: 1 < e < φ(n) und ggT(e, φ(n)) = 1</strong>
+                    <div class="formula">
+                        Beispiel: e = 5
+                        <br>ggT(5, 64) = 1 ✓
+                    </div>
+                    <p>e ist der öffentliche Exponent</p>
+                </div>
+
+                <div class="step">
+                    <span class="step-number">5</span>
+                    <strong>Berechne d mit: d × e ≡ 1 (mod φ(n))</strong>
+                    <div class="formula">
+                        d × 5 ≡ 1 (mod 64)
+                        <br>d = 77
+                        <br>Probe: 77 × 5 = 385 = 6 × 64 + 1 ✓
+                    </div>
+                    <p>d ist der private Exponent</p>
+                </div>
+
+                <div class="success-box">
+                    <h3>✅ Ergebnis</h3>
+                    <p><strong>Öffentlicher Schlüssel:</strong> (e=5, n=85)</p>
+                    <p><strong>Privater Schlüssel:</strong> (d=77, n=85)</p>
+                </div>
+
+                <h3>🔄 Ver- und Entschlüsselung</h3>
+                
+                <div class="visual-diagram">
+                    <div class="box">Klartext (m)</div>
+                    <div class="arrow">↓</div>
+                    <div class="box">Verschlüsselung: c = m<sup>e</sup> mod n</div>
+                    <div class="arrow">↓</div>
+                    <div class="box">Geheimtext (c)</div>
+                    <div class="arrow">↓</div>
+                    <div class="box">Entschlüsselung: m = c<sup>d</sup> mod n</div>
+                    <div class="arrow">↓</div>
+                    <div class="box">Klartext (m)</div>
+                </div>
+
+                <div class="info-box">
+                    <h3>🔍 Wichtig zu verstehen</h3>
+                    <ul>
+                        <li><strong>Mit dem öffentlichen Schlüssel verschlüsselt</strong> → nur mit dem privaten Schlüssel entschlüsselbar</li>
+                        <li><strong>Mit dem privaten Schlüssel verschlüsselt</strong> → mit dem öffentlichen Schlüssel entschlüsselbar (Grundlage für Signaturen!)</li>
+                        <li>Die Sicherheit beruht darauf, dass es sehr schwer ist, n in p und q zu zerlegen</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- RSA PRACTICE SECTION -->
+            <div id="rsa-practice" class="section">
+                <h2>✏️ RSA Übung: Verschlüssele "HI"</h2>
+                
+                <div class="info-box">
+                    <h3>🎯 Deine Aufgabe</h3>
+                    <p>Berechne Schritt für Schritt die RSA-Schlüssel für p=5 und q=17 und verschlüssele dann die Nachricht "HI".</p>
+                </div>
+
+                <h3>📊 ASCII-Tabelle (Auszug)</h3>
+                <table>
+                    <tr>
+                        <th>Zeichen</th>
+                        <th>ASCII-Wert (dezimal)</th>
+                    </tr>
+                    <tr><td>H</td><td>72</td></tr>
+                    <tr><td>I</td><td>73</td></tr>
+                    <tr><td>Leerzeichen</td><td>32</td></tr>
+                    <tr><td>A</td><td>65</td></tr>
+                    <tr><td>B</td><td>66</td></tr>
+                </table>
+
+                <h3>Schritt 1: Berechne n</h3>
+                <div class="interactive-box">
+                    <p>Gegeben: p = 5, q = 17</p>
+                    <label for="calc-n">Berechne n = p × q:</label>
+                    <input type="number" id="calc-n" placeholder="Deine Antwort">
+                    <button onclick="checkN()">Prüfen</button>
+                    <div id="result-n"></div>
+                </div>
+
+                <h3>Schritt 2: Berechne φ(n)</h3>
+                <div class="interactive-box">
+                    <label for="calc-phi">Berechne φ(n) = (p-1) × (q-1):</label>
+                    <input type="number" id="calc-phi" placeholder="Deine Antwort">
+                    <button onclick="checkPhi()">Prüfen</button>
+                    <div id="result-phi"></div>
+                    
+                    <div class="info-box" style="margin-top: 20px;">
+                        <h4>💡 Hilfe: Was ist φ(n)?</h4>
+                        <p>Die Eulersche Phi-Funktion φ(n) gibt an, wie viele Zahlen zwischen 1 und n existieren, die zu n teilerfremd sind.</p>
+                        <p>Für zwei Primzahlen p und q gilt: φ(p×q) = (p-1) × (q-1)</p>
+                    </div>
+                </div>
+
+                <h3>Schritt 3: Wähle e</h3>
+                <div class="interactive-box">
+                    <p>e muss teilerfremd zu φ(n) sein: ggT(e, φ(n)) = 1</p>
+                    <label for="calc-e">Wähle einen passenden Wert für e (zwischen 2 und φ(n)-1):</label>
+                    <input type="number" id="calc-e" placeholder="Deine Antwort">
+                    <button onclick="checkE()">Prüfen</button>
+                    <div id="result-e"></div>
+                    
+                    <div class="info-box" style="margin-top: 20px;">
+                        <h4>💡 Tipp</h4>
+                        <p>Häufig verwendete Werte für e sind: 3, 5, 17, 257, 65537</p>
+                        <p>Probiere e = 5 aus!</p>
+                    </div>
+                </div>
+
+                <h3>Schritt 4: Berechne d</h3>
+                <div class="interactive-box">
+                    <p>d ist das multiplikative Inverse von e modulo φ(n)</p>
+                    <p>Das bedeutet: d × e ≡ 1 (mod φ(n))</p>
+                    <label for="calc-d">Berechne d (für e=5 und φ(n)=64):</label>
+                    <input type="number" id="calc-d" placeholder="Deine Antwort">
+                    <button onclick="checkD()">Prüfen</button>
+                    <div id="result-d"></div>
+                    
+                    <div class="info-box" style="margin-top: 20px;">
+                        <h4>💡 Hilfe: Wie finde ich d?</h4>
+                        <p>Suche eine Zahl d, sodass (d × e) mod φ(n) = 1</p>
+                        <p>Für e=5 und φ(n)=64: Probiere Vielfache von 64 plus 1, geteilt durch 5</p>
+                        <p>Beispiel: (64 + 1) ÷ 5 = 13 (geht nicht auf)</p>
+                        <p>Beispiel: (128 + 1) ÷ 5 = 25,8 (geht nicht auf)</p>
+                        <p>Beispiel: (384 + 1) ÷ 5 = 77 ✓</p>
+                    </div>
+                </div>
+
+                <div id="keys-summary" style="display:none;">
+                    <div class="success-box">
+                        <h3>✅ Deine Schlüssel</h3>
+                        <p><strong>Öffentlicher Schlüssel:</strong> (e=<span id="display-e"></span>, n=<span id="display-n"></span>)</p>
+                        <p><strong>Privater Schlüssel:</strong> (d=<span id="display-d"></span>, n=<span id="display-n2"></span>)</p>
+                    </div>
+                </div>
+
+                <h3>Schritt 5: Verschlüssele "HI"</h3>
+                <div class="interactive-box">
+                    <h4>Verschlüsselung von 'H' (ASCII: 72)</h4>
+                    <p>Formel: c = m<sup>e</sup> mod n = 72<sup>5</sup> mod 85</p>
+                    <label for="encrypt-h">Berechne den Geheimtext für 'H':</label>
+                    <input type="number" id="encrypt-h" placeholder="Deine Antwort">
+                    <button onclick="checkEncryptH()">Prüfen</button>
+                    <div id="result-encrypt-h"></div>
+                    
+                    <div class="info-box" style="margin-top: 20px;">
+                        <h4>💡 Rechenhilfe</h4>
+                        <p>72<sup>5</sup> = 72 × 72 × 72 × 72 × 72 = 1.934.917.632</p>
+                        <p>1.934.917.632 mod 85 = ?</p>
+                        <p>Tipp: 1.934.917.632 ÷ 85 = 22.763.736 Rest 72</p>
+                    </div>
+                </div>
+
+                <div class="interactive-box">
+                    <h4>Verschlüsselung von 'I' (ASCII: 73)</h4>
+                    <p>Formel: c = m<sup>e</sup> mod n = 73<sup>5</sup> mod 85</p>
+                    <label for="encrypt-i">Berechne den Geheimtext für 'I':</label>
+                    <input type="number" id="encrypt-i" placeholder="Deine Antwort">
+                    <button onclick="checkEncryptI()">Prüfen</button>
+                    <div id="result-encrypt-i"></div>
+                </div>
+
+                <div id="encryption-summary" style="display:none;">
+                    <div class="success-box">
+                        <h3>🎉 Glückwunsch!</h3>
+                        <p><strong>Klartext:</strong> HI (ASCII: 72, 73)</p>
+                        <p><strong>Geheimtext:</strong> <span id="cipher-h"></span>, <span id="cipher-i"></span></p>
+                        <p>Du hast erfolgreich mit RSA verschlüsselt!</p>
+                    </div>
+                    
+                    <h4>🔓 Entschlüsselung (zur Kontrolle)</h4>
+                    <div class="formula">
+                        m = c<sup>d</sup> mod n
+                        <br>72 = <span id="cipher-h2"></span><sup>77</sup> mod 85
+                        <br>73 = <span id="cipher-i2"></span><sup>77</sup> mod 85
+                    </div>
+                </div>
+
+                <div class="warning-box">
+                    <h3>⚠️ Wichtig für digitale Signaturen</h3>
+                    <p>Was du gerade gelernt hast, ist die Grundlage für digitale Signaturen:</p>
+                    <ul>
+                        <li>Normale Verschlüsselung: Mit <strong>öffentlichem Schlüssel</strong> verschlüsseln → mit <strong>privatem Schlüssel</strong> entschlüsseln</li>
+                        <li>Digitale Signatur: Mit <strong>privatem Schlüssel</strong> "verschlüsseln" → mit <strong>öffentlichem Schlüssel</strong> "entschlüsseln"</li>
+                    </ul>
+                    <p>Dadurch kann jeder prüfen, dass die Nachricht wirklich vom Besitzer des privaten Schlüssels stammt!</p>
+                </div>
+            </div>
+
+            <!-- HASH SECTION -->
+            <div id="hash" class="section">
+                <h2># Hash-Funktionen</h2>
+                
+                <div class="info-box">
+                    <h3>Was ist eine Hash-Funktion?</h3>
+                    <p>Eine Hash-Funktion ist eine mathematische Funktion, die aus einer beliebig langen Eingabe (z.B. einer Nachricht) eine Ausgabe fester Länge erzeugt – den <strong>Hash-Wert</strong> oder <strong>Fingerabdruck</strong>.</p>
+                </div>
+
+                <h3>🎯 Eigenschaften einer kryptographischen Hash-Funktion</h3>
+                <div class="grid-2">
+                    <div class="interactive-box">
+                        <h4>⚡ Schnell berechenbar</h4>
+                        <p>Der Hash-Wert kann schnell aus der Eingabe berechnet werden</p>
+                    </div>
+                    <div class="interactive-box">
+                        <h4>🔒 Einwegfunktion</h4>
+                        <p>Aus dem Hash-Wert kann nicht auf die ursprüngliche Eingabe geschlossen werden</p>
+                    </div>
+                    <div class="interactive-box">
+                        <h4>🎲 Deterministisch</h4>
+                        <p>Die gleiche Eingabe erzeugt immer den gleichen Hash-Wert</p>
+                    </div>
+                    <div class="interactive-box">
+                        <h4>🦋 Lawineneffekt</h4>
+                        <p>Eine kleine Änderung der Eingabe verändert den Hash-Wert komplett</p>
+                    </div>
+                    <div class="interactive-box">
+                        <h4>🚫 Kollisionsresistent</h4>
+                        <p>Es ist praktisch unmöglich, zwei verschiedene Eingaben mit gleichem Hash-Wert zu finden</p>
+                    </div>
+                    <div class="interactive-box">
+                        <h4>📏 Feste Länge</h4>
+                        <p>Der Hash-Wert hat immer die gleiche Länge, unabhängig von der Eingabelänge</p>
+                    </div>
+                </div>
+
+                <h3>🔬 Probiere es aus!</h3>
+                <div class="interactive-box">
+                    <label for="hash-input">Gib einen Text ein:</label>
+                    <input type="text" id="hash-input" placeholder="z.B. Hallo Welt" value="Hallo Welt">
+                    
+                    <h4>Wähle eine Hash-Funktion:</h4>
+                    <div>
+                        <span class="hash-option selected" onclick="selectHash('simple')" id="hash-simple">Simple Hash</span>
+                        <span class="hash-option" onclick="selectHash('md5')" id="hash-md5">MD5 (Demo)</span>
+                        <span class="hash-option" onclick="selectHash('sha256')" id="hash-sha256">SHA-256 (simuliert)</span>
+                    </div>
+                    
+                    <button onclick="calculateHash()" style="margin-top: 20px;">Hash berechnen</button>
+                    
+                    <div id="hash-result" style="margin-top: 20px;"></div>
+                </div>
+
+                <h3>🦋 Der Lawineneffekt</h3>
+                <div class="interactive-box">
+                    <p>Ändere nur ein einziges Zeichen und beobachte, wie sich der Hash-Wert komplett verändert!</p>
+                    
+                    <label>Originaltext:</label>
+                    <input type="text" id="avalanche-1" value="Hallo Welt" oninput="demonstrateAvalanche()">
+                    <div class="key-display" id="avalanche-hash-1"></div>
+                    
+                    <label>Geänderter Text:</label>
+                    <input type="text" id="avalanche-2" value="Hallo Welt!" oninput="demonstrateAvalanche()">
+                    <div class="key-display" id="avalanche-hash-2"></div>
+                    
+                    <div id="avalanche-comparison"></div>
+                </div>
+
+                <h3>📚 Gängige Hash-Algorithmen</h3>
+                <table>
+                    <tr>
+                        <th>Algorithmus</th>
+                        <th>Hash-Länge</th>
+                        <th>Status</th>
+                        <th>Verwendung</th>
+                    </tr>
+                    <tr>
+                        <td><strong>MD5</strong></td>
+                        <td>128 Bit (32 Hex-Zeichen)</td>
+                        <td>⚠️ Unsicher</td>
+                        <td>Nur für Prüfsummen, nicht für Sicherheit</td>
+                    </tr>
+                    <tr>
+                        <td><strong>SHA-1</strong></td>
+                        <td>160 Bit (40 Hex-Zeichen)</td>
+                        <td>⚠️ Veraltet</td>
+                        <td>Wird nicht mehr empfohlen</td>
+                    </tr>
+                    <tr>
+                        <td><strong>SHA-256</strong></td>
+                        <td>256 Bit (64 Hex-Zeichen)</td>
+                        <td>✅ Sicher</td>
+                        <td>Bitcoin, TLS, digitale Signaturen</td>
+                    </tr>
+                    <tr>
+                        <td><strong>SHA-512</strong></td>
+                        <td>512 Bit (128 Hex-Zeichen)</td>
+                        <td>✅ Sehr sicher</td>
+                        <td>Hochsichere Anwendungen</td>
+                    </tr>
+                </table>
+
+                <h3>💡 Anwendungen von Hash-Funktionen</h3>
+                <div class="step">
+                    <span class="step-number">1</span>
+                    <strong>Passwort-Speicherung</strong>
+                    <p>Passwörter werden nicht im Klartext gespeichert, sondern nur ihr Hash-Wert</p>
+                </div>
+                <div class="step">
+                    <span class="step-number">2</span>
+                    <strong>Datenintegrität</strong>
+                    <p>Prüfung, ob Dateien bei der Übertragung verändert wurden</p>
+                </div>
+                <div class="step">
+                    <span class="step-number">3</span>
+                    <strong>Digitale Signaturen</strong>
+                    <p>Statt die ganze Nachricht zu signieren, wird nur der Hash-Wert signiert (effizienter!)</p>
+                </div>
+                <div class="step">
+                    <span class="step-number">4</span>
+                    <strong>Blockchain</strong>
+                    <p>Verkettung von Blöcken durch Hash-Werte (z.B. Bitcoin)</p>
+                </div>
+
+                <div class="warning-box">
+                    <h3>🔗 Verbindung zur digitalen Signatur</h3>
+                    <p>Bei digitalen Signaturen wird nicht die gesamte Nachricht mit dem privaten Schlüssel verschlüsselt, sondern nur der <strong>Hash-Wert</strong> der Nachricht!</p>
+                    <p><strong>Warum?</strong></p>
+                    <ul>
+                        <li>✅ Viel effizienter (Hash ist immer gleich lang, egal wie lang die Nachricht ist)</li>
+                        <li>✅ Schneller zu berechnen</li>
+                        <li>✅ Gleiche Sicherheit</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- SIGNATURE SECTION -->
+            <div id="signature" class="section">
+                <h2>✍️ Digitale Signatur</h2>
+                
+                <div class="info-box">
+                    <h3>Was ist eine digitale Signatur?</h3>
+                    <p>Eine digitale Signatur ist das elektronische Äquivalent zu einer handschriftlichen Unterschrift. Sie beweist:</p>
+                    <ul>
+                        <li><strong>Authentizität:</strong> Die Nachricht stammt wirklich vom angegebenen Absender</li>
+                        <li><strong>Integrität:</strong> Die Nachricht wurde nicht verändert</li>
+                        <li><strong>Nicht-Abstreitbarkeit:</strong> Der Absender kann nicht leugnen, die Nachricht gesendet zu haben</li>
+                    </ul>
+                </div>
+
+                <h3>🔄 Wie funktioniert eine digitale Signatur?</h3>
+                
+                <div class="visual-diagram">
+                    <h4>📤 Signieren (Sender)</h4>
+                    <div class="box">Nachricht</div>
+                    <div class="arrow">↓</div>
+                    <div class="box">Hash-Funktion</div>
+                    <div class="arrow">↓</div>
+                    <div class="box">Hash-Wert</div>
+                    <div class="arrow">↓</div>
+                    <div class="box">Verschlüsselung mit privatem Schlüssel</div>
+                    <div class="arrow">↓</div>
+                    <div class="box">Digitale Signatur</div>
+                    <div style="margin-top: 20px;">
+                        <p>→ Sende: <strong>Nachricht</strong> + <strong>Signatur</strong></p>
+                    </div>
+                </div>
+
+                <div class="visual-diagram" style="margin-top: 30px;">
+                    <h4>📥 Verifizieren (Empfänger)</h4>
+                    <div class="box">Empfangene Nachricht</div>
+                    <div class="arrow">↓</div>
+                    <div class="box">Hash-Funktion</div>
+                    <div class="arrow">↓</div>
+                    <div class="box">Hash-Wert A</div>
+                    
+                    <div style="margin: 20px 0; font-size: 1.5em;">⚖️ Vergleich</div>
+                    
+                    <div class="box">Empfangene Signatur</div>
+                    <div class="arrow">↓</div>
+                    <div class="box">Entschlüsselung mit öffentlichem Schlüssel</div>
+                    <div class="arrow">↓</div>
+                    <div class="box">Hash-Wert B</div>
+                    
+                    <div style="margin-top: 20px;">
+                        <p><strong>Hash-Wert A = Hash-Wert B?</strong></p>
+                        <p>✅ Ja → Signatur gültig</p>
+                        <p>❌ Nein → Signatur ungültig</p>
+                    </div>
+                </div>
+
+                <h3>🎯 Schritt-für-Schritt Anleitung</h3>
+                
+                <div class="step">
+                    <span class="step-number">1</span>
+                    <strong>Sender erstellt Schlüsselpaar</strong>
+                    <p>Alice generiert ein RSA-Schlüsselpaar: (e, n) öffentlich und (d, n) privat</p>
+                </div>
+
+                <div class="step">
+                    <span class="step-number">2</span>
+                    <strong>Sender teilt öffentlichen Schlüssel</strong>
+                    <p>Alice veröffentlicht ihren öffentlichen Schlüssel (e, n), damit andere ihre Signaturen prüfen können</p>
+                </div>
+
+                <div class="step">
+                    <span class="step-number">3</span>
+                    <strong>Sender erstellt Hash der Nachricht</strong>
+                    <p>Alice berechnet: hash = SHA-256("Hallo Bob")</p>
+                </div>
+
+                <div class="step">
+                    <span class="step-number">4</span>
+                    <strong>Sender signiert den Hash</strong>
+                    <p>Alice verschlüsselt den Hash mit ihrem privaten Schlüssel: signatur = hash<sup>d</sup> mod n</p>
+                </div>
+
+                <div class="step">
+                    <span class="step-number">5</span>
+                    <strong>Sender sendet Nachricht + Signatur</strong>
+                    <p>Alice sendet an Bob: "Hallo Bob" + signatur</p>
+                </div>
+
+                <div class="step">
+                    <span class="step-number">6</span>
+                    <strong>Empfänger berechnet Hash der Nachricht</strong>
+                    <p>Bob berechnet: hash_empfangen = SHA-256("Hallo Bob")</p>
+                </div>
+
+                <div class="step">
+                    <span class="step-number">7</span>
+                    <strong>Empfänger entschlüsselt die Signatur</strong>
+                    <p>Bob entschlüsselt mit Alices öffentlichem Schlüssel: hash_signatur = signatur<sup>e</sup> mod n</p>
+                </div>
+
+                <div class="step">
+                    <span class="step-number">8</span>
+                    <strong>Empfänger vergleicht Hash-Werte</strong>
+                    <p>Bob prüft: hash_empfangen == hash_signatur?</p>
+                    <p>✅ Gleich → Signatur gültig, Nachricht authentisch und unverändert</p>
+                    <p>❌ Unterschiedlich → Signatur ungültig, Nachricht wurde verändert oder stammt nicht von Alice</p>
+                </div>
+
+                <h3>🔐 Warum ist das sicher?</h3>
+                <div class="grid-2">
+                    <div class="interactive-box">
+                        <h4>🔒 Nur der Besitzer des privaten Schlüssels kann signieren</h4>
+                        <p>Da nur Alice ihren privaten Schlüssel kennt, kann nur sie gültige Signaturen erstellen</p>
+                    </div>
+                    <div class="interactive-box">
+                        <h4>🔓 Jeder kann die Signatur prüfen</h4>
+                        <p>Mit Alices öffentlichem Schlüssel kann jeder die Echtheit der Signatur verifizieren</p>
+                    </div>
+                    <div class="interactive-box">
+                        <h4>🔗 Hash bindet Signatur an Nachricht</h4>
+                        <p>Die Signatur ist nur für diese spezifische Nachricht gültig. Änderungen werden sofort erkannt</p>
+                    </div>
+                    <div class="interactive-box">
+                        <h4>⚡ Effizienz durch Hash</h4>
+                        <p>Statt die ganze Nachricht zu verschlüsseln, wird nur der kurze Hash-Wert verschlüsselt</p>
+                    </div>
+                </div>
+
+                <h3>❌ Was passiert bei Manipulation?</h3>
+                <div class="interactive-box">
+                    <h4>Szenario 1: Nachricht wird verändert</h4>
+                    <div class="formula">
+                        Original: "Überweise 100€" → Hash A → Signatur
+                        <br>Manipuliert: "Überweise 1000€" → Hash B → Hash B ≠ Hash A
+                        <br>❌ Signatur ungültig!
+                    </div>
+                </div>
+
+                <div class="interactive-box">
+                    <h4>Szenario 2: Angreifer versucht neue Signatur zu erstellen</h4>
+                    <div class="formula">
+                        Angreifer hat nicht den privaten Schlüssel
+                        <br>→ Kann keine gültige Signatur erstellen
+                        <br>❌ Fälschung wird erkannt!
+                    </div>
+                </div>
+
+                <h3>🆚 Unterschied: Verschlüsselung vs. Signatur</h3>
+                <table>
+                    <tr>
+                        <th>Aspekt</th>
+                        <th>Verschlüsselung</th>
+                        <th>Digitale Signatur</th>
+                    </tr>
+                    <tr>
+                        <td><strong>Ziel</strong></td>
+                        <td>Vertraulichkeit</td>
+                        <td>Authentizität & Integrität</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Verschlüsseln mit</strong></td>
+                        <td>Öffentlichem Schlüssel des Empfängers</td>
+                        <td>Privatem Schlüssel des Senders</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Entschlüsseln mit</strong></td>
+                        <td>Privatem Schlüssel des Empfängers</td>
+                        <td>Öffentlichem Schlüssel des Senders</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Was wird geschützt?</strong></td>
+                        <td>Inhalt vor unbefugtem Lesen</td>
+                        <td>Herkunft und Unversehrtheit</td>
+                    </tr>
+                </table>
+
+                <div class="success-box">
+                    <h3>💡 Merke dir</h3>
+                    <p><strong>Verschlüsselung:</strong> "Ich will, dass nur DU es lesen kannst" → Verschlüssele mit DEINEM öffentlichen Schlüssel</p>
+                    <p><strong>Signatur:</strong> "Ich will beweisen, dass ICH es geschrieben habe" → Signiere mit MEINEM privaten Schlüssel</p>
+                </div>
+
+                <div class="warning-box">
+                    <h3>🔐 Kombination: Verschlüsselung + Signatur</h3>
+                    <p>In der Praxis werden oft beide Verfahren kombiniert:</p>
+                    <ol>
+                        <li>Alice signiert die Nachricht mit ihrem privaten Schlüssel</li>
+                        <li>Alice verschlüsselt Nachricht + Signatur mit Bobs öffentlichem Schlüssel</li>
+                        <li>Bob entschlüsselt mit seinem privaten Schlüssel</li>
+                        <li>Bob verifiziert die Signatur mit Alices öffentlichem Schlüssel</li>
+                    </ol>
+                    <p>→ Vertraulichkeit + Authentizität + Integrität ✅</p>
+                </div>
+            </div>
+
+            <!-- PRACTICE LAB SECTION -->
+            <div id="practice" class="section">
+                <h2>🎯 Praxis-Labor: Digitale Signatur</h2>
+                
+                <div class="info-box">
+                    <h3>🎓 Deine Aufgabe</h3>
+                    <p>Simuliere eine sichere Kommunikation mit digitalen Signaturen. Du kannst Schlüssel generieren, Nachrichten signieren und Signaturen verifizieren.</p>
+                </div>
+
+                <div class="tabs">
+                    <button class="tab active" onclick="showTab('tab-keys')">🔑 Schlüssel</button>
+                    <button class="tab" onclick="showTab('tab-sign')">✍️ Signieren</button>
+                    <button class="tab" onclick="showTab('tab-verify')">✅ Verifizieren</button>
+                    <button class="tab" onclick="showTab('tab-complete')">🎯 Vollständige Kommunikation</button>
+                </div>
+
+                <!-- TAB: Keys -->
+                <div id="tab-keys" class="tab-content active">
+                    <h3>🔑 Schlüsselverwaltung</h3>
+                    
+                    <div class="grid-2">
+                        <div class="interactive-box">
+                            <h4>👤 Person A (z.B. Alice)</h4>
+                            <button onclick="generateKeysA()">Schlüsselpaar generieren</button>
+                            
+                            <label>Öffentlicher Schlüssel A:</label>
+                            <div class="key-display" id="public-key-a">Noch nicht generiert</div>
+                            <button class="copy-btn btn-secondary" onclick="copyKey('public-key-a')">📋 Kopieren</button>
+                            
+                            <label>Privater Schlüssel A:</label>
+                            <div class="key-display" id="private-key-a">Noch nicht generiert</div>
+                            <button class="copy-btn btn-secondary" onclick="copyKey('private-key-a')">📋 Kopieren</button>
+                        </div>
+
+                        <div class="interactive-box">
+                            <h4>👤 Person B (z.B. Bob)</h4>
+                            <button onclick="generateKeysB()">Schlüsselpaar generieren</button>
+                            
+                            <label>Öffentlicher Schlüssel B:</label>
+                            <div class="key-display" id="public-key-b">Noch nicht generiert</div>
+                            <button class="copy-btn btn-secondary" onclick="copyKey('public-key-b')">📋 Kopieren</button>
+                            
+                            <label>Privater Schlüssel B:</label>
+                            <div class="key-display" id="private-key-b">Noch nicht generiert</div>
+                            <button class="copy-btn btn-secondary" onclick="copyKey('private-key-b')">📋 Kopieren</button>
+                        </div>
+                    </div>
+
+                    <div class="info-box">
+                        <h4>💡 Hinweis</h4>
+                        <p>In der Realität würden die Schlüssel viel länger sein (2048 oder 4096 Bit). Hier verwenden wir kürzere Schlüssel für Demonstrationszwecke.</p>
+                    </div>
+                </div>
+
+                <!-- TAB: Sign -->
+                <div id="tab-sign" class="tab-content">
+                    <h3>✍️ Nachricht signieren</h3>
+                    
+                    <div class="interactive-box">
+                        <label>Wähle Hash-Funktion:</label>
+                        <div>
+                            <span class="hash-option selected" onclick="selectSignHash('simple')" id="sign-hash-simple">Simple Hash</span>
+                            <span class="hash-option" onclick="selectSignHash('md5')" id="sign-hash-md5">MD5 (Demo)</span>
+                            <span class="hash-option" onclick="selectSignHash('sha256')" id="sign-hash-sha256">SHA-256 (simuliert)</span>
+                        </div>
+
+                        <label>Deine Nachricht:</label>
+                        <textarea id="sign-message" rows="4" placeholder="Gib deine Nachricht ein...">Hallo, dies ist eine wichtige Nachricht!</textarea>
+
+                        <label>Dein privater Schlüssel:</label>
+                        <textarea id="sign-private-key" rows="2" placeholder="Füge deinen privaten Schlüssel ein..."></textarea>
+
+                        <button onclick="signMessage()">Nachricht signieren</button>
+
+                        <div id="sign-result"></div>
+                    </div>
+
+                    <div class="info-box">
+                        <h4>📋 Ablauf</h4>
+                        <ol>
+                            <li>Wähle eine Hash-Funktion</li>
+                            <li>Schreibe deine Nachricht</li>
+                            <li>Füge deinen privaten Schlüssel ein (aus dem Schlüssel-Tab)</li>
+                            <li>Klicke auf "Nachricht signieren"</li>
+                            <li>Kopiere die Signatur und sende sie zusammen mit der Nachricht</li>
+                        </ol>
+                    </div>
+                </div>
+
+                <!-- TAB: Verify -->
+                <div id="tab-verify" class="tab-content">
+                    <h3>✅ Signatur verifizieren</h3>
+                    
+                    <div class="interactive-box">
+                        <label>Wähle Hash-Funktion (muss die gleiche sein wie beim Signieren!):</label>
+                        <div>
+                            <span class="hash-option selected" onclick="selectVerifyHash('simple')" id="verify-hash-simple">Simple Hash</span>
+                            <span class="hash-option" onclick="selectVerifyHash('md5')" id="verify-hash-md5">MD5 (Demo)</span>
+                            <span class="hash-option" onclick="selectVerifyHash('sha256')" id="verify-hash-sha256">SHA-256 (simuliert)</span>
+                        </div>
+
+                        <label>Empfangene Nachricht:</label>
+                        <textarea id="verify-message" rows="4" placeholder="Füge die empfangene Nachricht ein..."></textarea>
+
+                        <label>Empfangene Signatur:</label>
+                        <textarea id="verify-signature" rows="2" placeholder="Füge die empfangene Signatur ein..."></textarea>
+
+                        <label>Öffentlicher Schlüssel des Senders:</label>
+                        <textarea id="verify-public-key" rows="2" placeholder="Füge den öffentlichen Schlüssel des Senders ein..."></textarea>
+
+                        <button onclick="verifySignature()">Signatur verifizieren</button>
+
+                        <div id="verify-result"></div>
+                    </div>
+
+                    <div class="warning-box">
+                        <h4>🧪 Experimentiere!</h4>
+                        <p>Versuche Folgendes:</p>
+                        <ul>
+                            <li>Ändere ein Zeichen in der Nachricht → Signatur wird ungültig</li>
+                            <li>Verwende einen falschen öffentlichen Schlüssel → Signatur wird ungültig</li>
+                            <li>Verwende eine andere Hash-Funktion → Signatur wird ungültig</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- TAB: Complete Communication -->
+                <div id="tab-complete" class="tab-content">
+                    <h3>🎯 Vollständige Kommunikation</h3>
+                    
+                    <div class="info-box">
+                        <h4>📬 Szenario</h4>
+                        <p>Simuliere eine vollständige Kommunikation zwischen zwei Personen mit digitalen Signaturen.</p>
+                    </div>
+
+                    <div class="grid-2">
+                        <!-- Sender Side -->
+                        <div class="interactive-box">
+                            <h4>📤 Sender (Alice)</h4>
+                            
+                            <label>Hash-Funktion:</label>
+                            <div>
+                                <span class="hash-option selected" onclick="selectCompleteHash('simple')" id="complete-hash-simple">Simple</span>
+                                <span class="hash-option" onclick="selectCompleteHash('md5')" id="complete-hash-md5">MD5</span>
+                                <span class="hash-option" onclick="selectCompleteHash('sha256')" id="complete-hash-sha256">SHA-256</span>
+                            </div>
+
+                            <label>Meine Nachricht:</label>
+                            <textarea id="complete-message" rows="4" placeholder="Schreibe deine Nachricht...">Treffen um 15 Uhr im Café!</textarea>
+
+                            <label>Mein privater Schlüssel:</label>
+                            <input type="text" id="complete-my-private" placeholder="Privater Schlüssel">
+                            <button class="btn-secondary" onclick="useKeyA('private')">Schlüssel A verwenden</button>
+
+                            <label>Öffentlicher Schlüssel des Empfängers (für Verschlüsselung):</label>
+                            <input type="text" id="complete-receiver-public" placeholder="Öffentlicher Schlüssel des Empfängers">
+                            <button class="btn-secondary" onclick="useKeyB('public')">Schlüssel B verwenden</button>
+
+                            <button onclick="sendCompleteMessage()" class="btn-success">📤 Signieren & Verschlüsseln</button>
+
+                            <div id="complete-send-result"></div>
+                        </div>
+
+                        <!-- Receiver Side -->
+                        <div class="interactive-box">
+                            <h4>📥 Empfänger (Bob)</h4>
+                            
+                            <label>Empfangene verschlüsselte Nachricht:</label>
+                            <textarea id="complete-encrypted" rows="4" placeholder="Wird automatisch gefüllt..." readonly></textarea>
+
+                            <label>Empfangene Signatur:</label>
+                            <input type="text" id="complete-received-signature" placeholder="Wird automatisch gefüllt..." readonly>
+
+                            <label>Mein privater Schlüssel (zum Entschlüsseln):</label>
+                            <input type="text" id="complete-my-private-receive" placeholder="Privater Schlüssel">
+                            <button class="btn-secondary" onclick="useKeyB('private-receive')">Schlüssel B verwenden</button>
+
+                            <label>Öffentlicher Schlüssel des Senders (zur Verifikation):</label>
+                            <input type="text" id="complete-sender-public" placeholder="Öffentlicher Schlüssel des Senders">
+                            <button class="btn-secondary" onclick="useKeyA('public-receive')">Schlüssel A verwenden</button>
+
+                            <button onclick="receiveCompleteMessage()" class="btn-success">📥 Entschlüsseln & Verifizieren</button>
+
+                            <div id="complete-receive-result"></div>
+                        </div>
+                    </div>
+
+                    <div class="success-box" style="margin-top: 30px;">
+                        <h4>🎓 Lernziel erreicht?</h4>
+                        <p>Kannst du jetzt erklären:</p>
+                        <ul>
+                            <li>✅ Wie eine digitale Signatur erstellt wird?</li>
+                            <li>✅ Warum Hash-Funktionen verwendet werden?</li>
+                            <li>✅ Wie die Verifikation funktioniert?</li>
+                            <li>✅ Was der Unterschied zwischen Verschlüsselung und Signatur ist?</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Global variables
+        let currentSection = 'home';
+        let currentHashAlgo = 'simple';
+        let signHashAlgo = 'simple';
+        let verifyHashAlgo = 'simple';
+        let completeHashAlgo = 'simple';
+        let keysA = null;
+        let keysB = null;
+
+        // Navigation
+        function showSection(sectionId) {
+            document.querySelectorAll('.section').forEach(section => {
+                section.classList.remove('active');
+            });
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            document.getElementById(sectionId).classList.add('active');
+            event.target.classList.add('active');
+            currentSection = sectionId;
+        }
+
+        // Tab navigation
+        function showTab(tabId) {
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            document.querySelectorAll('.tab-content').forEach(content => {
+                content.classList.remove('active');
+            });
+            
+            event.target.classList.add('active');
+            document.getElementById(tabId).classList.add('active');
+        }
+
+        // RSA Practice Functions
+        function checkN() {
+            const input = parseInt(document.getElementById('calc-n').value);
+            const result = document.getElementById('result-n');
+            
+            if (input === 85) {
+                result.innerHTML = '<div class="success-box">✅ Richtig! n = 5 × 17 = 85</div>';
+            } else {
+                result.innerHTML = '<div class="error">❌ Nicht ganz. Multipliziere p und q: 5 × 17 = ?</div>';
+            }
+        }
+
+        function checkPhi() {
+            const input = parseInt(document.getElementById('calc-phi').value);
+            const result = document.getElementById('result-phi');
+            
+            if (input === 64) {
+                result.innerHTML = '<div class="success-box">✅ Richtig! φ(n) = (5-1) × (17-1) = 4 × 16 = 64</div>';
+            } else {
+                result.innerHTML = '<div class="error">❌ Nicht ganz. Berechne (p-1) × (q-1) = (5-1) × (17-1) = ?</div>';
+            }
+        }
+
+        function gcd(a, b) {
+            while (b !== 0) {
+                let temp = b;
+                b = a % b;
+                a = temp;
+            }
+            return a;
+        }
+
+        function checkE() {
+            const input = parseInt(document.getElementById('calc-e').value);
+            const result = document.getElementById('result-e');
+            
+            if (input < 2 || input >= 64) {
+                result.innerHTML = '<div class="error">❌ e muss zwischen 2 und 63 liegen.</div>';
+                return;
+            }
+            
+            if (gcd(input, 64) === 1) {
+                result.innerHTML = `<div class="success-box">✅ Richtig! e = ${input} ist teilerfremd zu φ(n) = 64<br>ggT(${input}, 64) = 1</div>`;
+            } else {
+                result.innerHTML = `<div class="error">❌ e = ${input} ist nicht teilerfremd zu 64.<br>ggT(${input}, 64) = ${gcd(input, 64)} ≠ 1<br>Versuche es mit e = 5</div>`;
+            }
+        }
+
+        function checkD() {
+            const input = parseInt(document.getElementById('calc-d').value);
+            const result = document.getElementById('result-d');
+            const e = 5;
+            const phi = 64;
+            
+            if ((input * e) % phi === 1) {
+                result.innerHTML = `<div class="success-box">✅ Richtig! d = ${input}<br>Probe: ${input} × 5 = ${input * 5} ≡ 1 (mod 64)</div>`;
+                
+                // Show keys summary
+                document.getElementById('keys-summary').style.display = 'block';
+                document.getElementById('display-e').textContent = e;
+                document.getElementById('display-n').textContent = '85';
+                document.getElementById('display-d').textContent = input;
+                document.getElementById('display-n2').textContent = '85';
+            } else {
+                result.innerHTML = `<div class="error">❌ Nicht ganz. (${input} × 5) mod 64 = ${(input * 5) % 64} ≠ 1<br>Tipp: d = 77</div>`;
+            }
+        }
+
+        function modPow(base, exp, mod) {
+            let result = 1;
+            base = base % mod;
+            while (exp > 0) {
+                if (exp % 2 === 1) {
+                    result = (result * base) % mod;
+                }
+                exp = Math.floor(exp / 2);
+                base = (base * base) % mod;
+            }
+            return result;
+        }
+
+        function checkEncryptH() {
+            const input = parseInt(document.getElementById('encrypt-h').value);
+            const result = document.getElementById('result-encrypt-h');
+            const correct = modPow(72, 5, 85);
+            
+            if (input === correct) {
+                result.innerHTML = `<div class="success-box">✅ Richtig! 72<sup>5</sup> mod 85 = ${correct}</div>`;
+                document.getElementById('cipher-h').textContent = correct;
+                document.getElementById('cipher-h2').textContent = correct;
+            } else {
+                result.innerHTML = `<div class="error">❌ Nicht ganz. Tipp: Das Ergebnis ist ${correct}</div>`;
+            }
+        }
+
+        function checkEncryptI() {
+            const input = parseInt(document.getElementById('encrypt-i').value);
+            const result = document.getElementById('result-encrypt-i');
+            const correct = modPow(73, 5, 85);
+            
+            if (input === correct) {
+                result.innerHTML = `<div class="success-box">✅ Richtig! 73<sup>5</sup> mod 85 = ${correct}</div>`;
+                document.getElementById('cipher-i').textContent = correct;
+                document.getElementById('cipher-i2').textContent = correct;
+                document.getElementById('encryption-summary').style.display = 'block';
+            } else {
+                result.innerHTML = `<div class="error">❌ Nicht ganz. Tipp: Das Ergebnis ist ${correct}</div>`;
+            }
+        }
+
+        // Hash Functions
+        function simpleHash(str) {
+            let hash = 0;
+            for (let i = 0; i < str.length; i++) {
+                const char = str.charCodeAt(i);
+                hash = ((hash << 5) - hash) + char;
+                hash = hash & hash;
+            }
+            return Math.abs(hash).toString(16).padStart(8, '0');
+        }
+
+        function md5Demo(str) {
+            // Simplified MD5-like hash for demo
+            let hash = 0;
+            for (let i = 0; i < str.length; i++) {
+                hash = ((hash << 5) - hash) + str.charCodeAt(i);
+                hash = hash & hash;
+            }
+            let result = '';
+            for (let i = 0; i < 4; i++) {
+                result += Math.abs(hash * (i + 1)).toString(16).padStart(8, '0');
+            }
+            return result.substring(0, 32);
+        }
+
+        function sha256Demo(str) {
+            // Simplified SHA-256-like hash for demo
+            let hash = 5381;
+            for (let i = 0; i < str.length; i++) {
+                hash = ((hash << 5) + hash) + str.charCodeAt(i);
+            }
+            let result = '';
+            for (let i = 0; i < 8; i++) {
+                result += Math.abs(hash * (i + 7)).toString(16).padStart(8, '0');
+            }
+            return result.substring(0, 64);
+        }
+
+        function getHash(str, algo) {
+            switch(algo) {
+                case 'simple': return simpleHash(str);
+                case 'md5': return md5Demo(str);
+                case 'sha256': return sha256Demo(str);
+                default: return simpleHash(str);
+            }
+        }
+
+        function selectHash(algo) {
+            currentHashAlgo = algo;
+            document.querySelectorAll('#hash .hash-option').forEach(opt => {
+                opt.classList.remove('selected');
+            });
+            document.getElementById('hash-' + algo).classList.add('selected');
+        }
+
+        function calculateHash() {
+            const input = document.getElementById('hash-input').value;
+            const hash = getHash(input, currentHashAlgo);
+            const algoName = currentHashAlgo === 'simple' ? 'Simple Hash' : 
+                           currentHashAlgo === 'md5' ? 'MD5 (Demo)' : 'SHA-256 (simuliert)';
+            
+            document.getElementById('hash-result').innerHTML = `
+                <div class="success-box">
+                    <h4>Hash-Wert (${algoName}):</h4>
+                    <div class="key-display">${hash}</div>
+                    <p><strong>Länge:</strong> ${hash.length} Zeichen</p>
+                </div>
+            `;
+        }
+
+        function demonstrateAvalanche() {
+            const text1 = document.getElementById('avalanche-1').value;
+            const text2 = document.getElementById('avalanche-2').value;
+            
+            const hash1 = getHash(text1, currentHashAlgo);
+            const hash2 = getHash(text2, currentHashAlgo);
+            
+            document.getElementById('avalanche-hash-1').textContent = hash1;
+            document.getElementById('avalanche-hash-2').textContent = hash2;
+            
+            let differences = 0;
+            for (let i = 0; i < Math.min(hash1.length, hash2.length); i++) {
+                if (hash1[i] !== hash2[i]) differences++;
+            }
+            
+            const percentage = ((differences / hash1.length) * 100).toFixed(1);
+            
+            if (text1 === text2) {
+                document.getElementById('avalanche-comparison').innerHTML = `
+                    <div class="info-box">
+                        ✅ Identische Texte → Identische Hash-Werte
+                    </div>
+                `;
+            } else {
+                document.getElementById('avalanche-comparison').innerHTML = `
+                    <div class="warning-box">
+                        🦋 <strong>Lawineneffekt:</strong> ${differences} von ${hash1.length} Zeichen unterschiedlich (${percentage}%)
+                        <br>Selbst kleinste Änderungen führen zu völlig unterschiedlichen Hash-Werten!
+                    </div>
+                `;
+            }
+        }
+
+        // Initialize avalanche demo
+        setTimeout(() => {
+            if (document.getElementById('avalanche-1')) {
+                demonstrateAvalanche();
+            }
+        }, 100);
+
+        // Key Generation (simplified RSA)
+        function generateSimpleRSAKeys() {
+            // Using small primes for demonstration
+            const p = 61;
+            const q = 53;
+            const n = p * q; // 3233
+            const phi = (p - 1) * (q - 1); // 3120
+            const e = 17; // Common choice
+            
+            // Calculate d (simplified)
+            let d = 1;
+            while ((d * e) % phi !== 1) {
+                d++;
+            }
+            
+            return {
+                publicKey: { e, n },
+                privateKey: { d, n }
+            };
+        }
+
+        function generateKeysA() {
+            keysA = generateSimpleRSAKeys();
+            document.getElementById('public-key-a').textContent = 
+                `e: ${keysA.publicKey.e}, n: ${keysA.publicKey.n}`;
+            document.getElementById('private-key-a').textContent = 
+                `d: ${keysA.privateKey.d}, n: ${keysA.privateKey.n}`;
+        }
+
+        function generateKeysB() {
+            keysB = generateSimpleRSAKeys();
+            document.getElementById('public-key-b').textContent = 
+                `e: ${keysB.publicKey.e}, n: ${keysB.publicKey.n}`;
+            document.getElementById('private-key-b').textContent = 
+                `d: ${keysB.privateKey.d}, n: ${keysB.privateKey.n}`;
+        }
+
+        function copyKey(elementId) {
+            const text = document.getElementById(elementId).textContent;
+            navigator.clipboard.writeText(text).then(() => {
+                alert('Schlüssel kopiert!');
+            });
+        }
+
+        // Signing
+        function selectSignHash(algo) {
+            signHashAlgo = algo;
+            document.querySelectorAll('#tab-sign .hash-option').forEach(opt => {
+                opt.classList.remove('selected');
+            });
+            document.getElementById('sign-hash-' + algo).classList.add('selected');
+        }
+
+        function parseKey(keyStr) {
+            const match = keyStr.match(/d:\s*(\d+),\s*n:\s*(\d+)|e:\s*(\d+),\s*n:\s*(\d+)/);
+            if (!match) return null;
+            
+            if (match[1]) {
+                return { d: parseInt(match[1]), n: parseInt(match[2]) };
+            } else {
+                return { e: parseInt(match[3]), n: parseInt(match[4]) };
+            }
+        }
+
+        function signMessage() {
+            const message = document.getElementById('sign-message').value;
+            const keyStr = document.getElementById('sign-private-key').value;
+            
+            if (!message || !keyStr) {
+                document.getElementById('sign-result').innerHTML = 
+                    '<div class="error">❌ Bitte fülle alle Felder aus!</div>';
+                return;
+            }
+            
+            const key = parseKey(keyStr);
+            if (!key || !key.d) {
+                document.getElementById('sign-result').innerHTML = 
+                    '<div class="error">❌ Ungültiger privater Schlüssel!</div>';
+                return;
+            }
+            
+            // Calculate hash
+            const hash = getHash(message, signHashAlgo);
+            const hashNum = parseInt(hash.substring(0, 8), 16) % key.n;
+            
+            // Sign (encrypt hash with private key)
+            const signature = modPow(hashNum, key.d, key.n);
+            
+            const algoName = signHashAlgo === 'simple' ? 'Simple Hash' : 
+                           signHashAlgo === 'md5' ? 'MD5' : 'SHA-256';
+            
+            document.getElementById('sign-result').innerHTML = `
+                <div class="success-box">
+                    <h4>✅ Nachricht signiert!</h4>
+                    <p><strong>Hash-Algorithmus:</strong> ${algoName}</p>
+                    <p><strong>Hash-Wert:</strong></p>
+                    <div class="key-display">${hash}</div>
+                    <p><strong>Hash (numerisch):</strong> ${hashNum}</p>
+                    <p><strong>Signatur:</strong></p>
+                    <div class="key-display">${signature}</div>
+                    <button class="copy-btn" onclick="copyText('${signature}')">📋 Signatur kopieren</button>
+                </div>
+                <div class="info-box" style="margin-top: 20px;">
+                    <h4>📤 Zum Versenden:</h4>
+                    <p>1. Kopiere die Signatur</p>
+                    <p>2. Sende die <strong>Nachricht</strong> + <strong>Signatur</strong> an den Empfänger</p>
+                    <p>3. Der Empfänger benötigt deinen <strong>öffentlichen Schlüssel</strong> zur Verifikation</p>
+                </div>
+            `;
+        }
+
+        function copyText(text) {
+            navigator.clipboard.writeText(text).then(() => {
+                alert('Signatur kopiert!');
+            });
+        }
+
+        // Verification
+        function selectVerifyHash(algo) {
+            verifyHashAlgo = algo;
+            document.querySelectorAll('#tab-verify .hash-option').forEach(opt => {
+                opt.classList.remove('selected');
+            });
+            document.getElementById('verify-hash-' + algo).classList.add('selected');
+        }
+
+        function verifySignature() {
+            const message = document.getElementById('verify-message').value;
+            const signatureStr = document.getElementById('verify-signature').value;
+            const keyStr = document.getElementById('verify-public-key').value;
+            
+            if (!message || !signatureStr || !keyStr) {
+                document.getElementById('verify-result').innerHTML = 
+                    '<div class="error">❌ Bitte fülle alle Felder aus!</div>';
+                return;
+            }
+            
+            const key = parseKey(keyStr);
+            if (!key || !key.e) {
+                document.getElementById('verify-result').innerHTML = 
+                    '<div class="error">❌ Ungültiger öffentlicher Schlüssel!</div>';
+                return;
+            }
+            
+            const signature = parseInt(signatureStr.trim());
+            if (isNaN(signature)) {
+                document.getElementById('verify-result').innerHTML = 
+                    '<div class="error">❌ Ungültige Signatur!</div>';
+                return;
+            }
+            
+            // Calculate hash of received message
+            const hash = getHash(message, verifyHashAlgo);
+            const hashNum = parseInt(hash.substring(0, 8), 16) % key.n;
+            
+            // Decrypt signature with public key
+            const decryptedHash = modPow(signature, key.e, key.n);
+            
+            const algoName = verifyHashAlgo === 'simple' ? 'Simple Hash' : 
+                           verifyHashAlgo === 'md5' ? 'MD5' : 'SHA-256';
+            
+            if (hashNum === decryptedHash) {
+                document.getElementById('verify-result').innerHTML = `
+                    <div class="success-box">
+                        <h3>✅ Signatur gültig!</h3>
+                        <p><strong>Hash-Algorithmus:</strong> ${algoName}</p>
+                        <p><strong>Berechneter Hash:</strong></p>
+                        <div class="key-display">${hash}</div>
+                        <p><strong>Hash (numerisch):</strong> ${hashNum}</p>
+                        <p><strong>Entschlüsselter Hash aus Signatur:</strong> ${decryptedHash}</p>
+                        <p style="margin-top: 15px;">✅ Die Nachricht ist <strong>authentisch</strong> und <strong>unverändert</strong>!</p>
+                        <p>✅ Sie stammt vom Besitzer des privaten Schlüssels!</p>
+                    </div>
+                `;
+            } else {
+                document.getElementById('verify-result').innerHTML = `
+                    <div class="error">
+                        <h3>❌ Signatur ungültig!</h3>
+                        <p><strong>Berechneter Hash:</strong> ${hashNum}</p>
+                        <p><strong>Entschlüsselter Hash aus Signatur:</strong> ${decryptedHash}</p>
+                        <p style="margin-top: 15px;">❌ Die Nachricht wurde verändert ODER</p>
+                        <p>❌ Die Signatur stammt nicht vom angegebenen Absender ODER</p>
+                        <p>❌ Die Hash-Funktion stimmt nicht überein</p>
+                    </div>
+                `;
+            }
+        }
+
+        // Complete Communication
+        function selectCompleteHash(algo) {
+            completeHashAlgo = algo;
+            document.querySelectorAll('#tab-complete .hash-option').forEach(opt => {
+                opt.classList.remove('selected');
+            });
+            document.getElementById('complete-hash-' + algo).classList.add('selected');
+        }
+
+        function useKeyA(type) {
+            if (!keysA) {
+                alert('Bitte generiere zuerst Schlüssel A im Schlüssel-Tab!');
+                return;
+            }
+            
+            if (type === 'private') {
+                document.getElementById('complete-my-private').value = 
+                    `d: ${keysA.privateKey.d}, n: ${keysA.privateKey.n}`;
+            } else if (type === 'public-receive') {
+                document.getElementById('complete-sender-public').value = 
+                    `e: ${keysA.publicKey.e}, n: ${keysA.publicKey.n}`;
+            }
+        }
+
+        function useKeyB(type) {
+            if (!keysB) {
+                alert('Bitte generiere zuerst Schlüssel B im Schlüssel-Tab!');
+                return;
+            }
+            
+            if (type === 'public') {
+                document.getElementById('complete-receiver-public').value = 
+                    `e: ${keysB.publicKey.e}, n: ${keysB.publicKey.n}`;
+            } else if (type === 'private-receive') {
+                document.getElementById('complete-my-private-receive').value = 
+                    `d: ${keysB.privateKey.d}, n: ${keysB.privateKey.n}`;
+            }
+        }
+
+        function sendCompleteMessage() {
+            const message = document.getElementById('complete-message').value;
+            const myPrivateKeyStr = document.getElementById('complete-my-private').value;
+            const receiverPublicKeyStr = document.getElementById('complete-receiver-public').value;
+            
+            if (!message || !myPrivateKeyStr || !receiverPublicKeyStr) {
+                document.getElementById('complete-send-result').innerHTML = 
+                    '<div class="error">❌ Bitte fülle alle Felder aus!</div>';
+                return;
+            }
+            
+            const myPrivateKey = parseKey(myPrivateKeyStr);
+            const receiverPublicKey = parseKey(receiverPublicKeyStr);
+            
+            if (!myPrivateKey || !myPrivateKey.d || !receiverPublicKey || !receiverPublicKey.e) {
+                document.getElementById('complete-send-result').innerHTML = 
+                    '<div class="error">❌ Ungültige Schlüssel!</div>';
+                return;
+            }
+            
+            // 1. Create hash
+            const hash = getHash(message, completeHashAlgo);
+            const hashNum = parseInt(hash.substring(0, 8), 16) % myPrivateKey.n;
+            
+            // 2. Sign hash with private key
+            const signature = modPow(hashNum, myPrivateKey.d, myPrivateKey.n);
+            
+            // 3. Encrypt message with receiver's public key (simplified: just encode)
+            let encrypted = '';
+            for (let i = 0; i < message.length; i++) {
+                const charCode = message.charCodeAt(i);
+                const enc = modPow(charCode, receiverPublicKey.e, receiverPublicKey.n);
+                encrypted += enc + (i < message.length - 1 ? ',' : '');
+            }
+            
+            // Display results
+            const algoName = completeHashAlgo === 'simple' ? 'Simple Hash' : 
+                           completeHashAlgo === 'md5' ? 'MD5' : 'SHA-256';
+            
+            document.getElementById('complete-send-result').innerHTML = `
+                <div class="success-box">
+                    <h4>✅ Nachricht vorbereitet!</h4>
+                    <p><strong>1. Hash berechnet (${algoName}):</strong></p>
+                    <div class="key-display" style="font-size: 0.8em;">${hash}</div>
+                    <p><strong>2. Hash signiert:</strong> ${signature}</p>
+                    <p><strong>3. Nachricht verschlüsselt</strong></p>
+                    <p style="margin-top: 15px;">📤 Die verschlüsselte Nachricht und Signatur wurden an den Empfänger übertragen!</p>
+                </div>
+            `;
+            
+            // Fill receiver fields
+            document.getElementById('complete-encrypted').value = encrypted;
+            document.getElementById('complete-received-signature').value = signature;
+        }
+
+        function receiveCompleteMessage() {
+            const encrypted = document.getElementById('complete-encrypted').value;
+            const signatureStr = document.getElementById('complete-received-signature').value;
+            const myPrivateKeyStr = document.getElementById('complete-my-private-receive').value;
+            const senderPublicKeyStr = document.getElementById('complete-sender-public').value;
+            
+            if (!encrypted || !signatureStr || !myPrivateKeyStr || !senderPublicKeyStr) {
+                document.getElementById('complete-receive-result').innerHTML = 
+                    '<div class="error">❌ Bitte fülle alle Felder aus!</div>';
+                return;
+            }
+            
+            const myPrivateKey = parseKey(myPrivateKeyStr);
+            const senderPublicKey = parseKey(senderPublicKeyStr);
+            const signature = parseInt(signatureStr.trim());
+            
+            if (!myPrivateKey || !myPrivateKey.d || !senderPublicKey || !senderPublicKey.e || isNaN(signature)) {
+                document.getElementById('complete-receive-result').innerHTML = 
+                    '<div class="error">❌ Ungültige Eingaben!</div>';
+                return;
+            }
+            
+            // 1. Decrypt message with private key
+            const encryptedParts = encrypted.split(',').map(x => parseInt(x.trim()));
+            let decrypted = '';
+            for (let enc of encryptedParts) {
+                const charCode = modPow(enc, myPrivateKey.d, myPrivateKey.n);
+                decrypted += String.fromCharCode(charCode);
+            }
+            
+            // 2. Calculate hash of decrypted message
+            const hash = getHash(decrypted, completeHashAlgo);
+            const hashNum = parseInt(hash.substring(0, 8), 16) % senderPublicKey.n;
+            
+            // 3. Verify signature
+            const decryptedHash = modPow(signature, senderPublicKey.e, senderPublicKey.n);
+            
+            const algoName = completeHashAlgo === 'simple' ? 'Simple Hash' : 
+                           completeHashAlgo === 'md5' ? 'MD5' : 'SHA-256';
+            
+            if (hashNum === decryptedHash) {
+                document.getElementById('complete-receive-result').innerHTML = `
+                    <div class="success-box">
+                        <h3>✅ Nachricht erfolgreich empfangen!</h3>
+                        <p><strong>1. Nachricht entschlüsselt:</strong></p>
+                        <div class="key-display">${decrypted}</div>
+                        <p><strong>2. Hash berechnet (${algoName}):</strong></p>
+                        <div class="key-display" style="font-size: 0.8em;">${hash}</div>
+                        <p><strong>3. Signatur verifiziert:</strong></p>
+                        <p>Berechneter Hash: ${hashNum}</p>
+                        <p>Entschlüsselter Hash: ${decryptedHash}</p>
+                        <p style="margin-top: 15px; font-size: 1.2em;">
+                            ✅ Die Nachricht ist <strong>authentisch</strong> und <strong>unverändert</strong>!<br>
+                            ✅ Sie stammt vom richtigen Absender!<br>
+                            ✅ Niemand konnte sie unterwegs lesen!
+                        </p>
+                    </div>
+                `;
+            } else {
+                document.getElementById('complete-receive-result').innerHTML = `
+                    <div class="error">
+                        <h3>❌ Signatur ungültig!</h3>
+                        <p><strong>Entschlüsselte Nachricht:</strong></p>
+                        <div class="key-display">${decrypted}</div>
+                        <p><strong>Berechneter Hash:</strong> ${hashNum}</p>
+                        <p><strong>Entschlüsselter Hash:</strong> ${decryptedHash}</p>
+                        <p style="margin-top: 15px;">
+                            ❌ Die Nachricht wurde möglicherweise verändert!<br>
+                            ❌ Oder sie stammt nicht vom angegebenen Absender!
+                        </p>
+                    </div>
+                `;
+            }
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            // Set initial hash input
+            if (document.getElementById('hash-input')) {
+                calculateHash();
+            }
+        });
+    </script>
+</body>
+</html>
