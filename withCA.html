@@ -33,6 +33,9 @@
         .hash-box { background: #f8fafc; padding: 10px; border: 1px solid #e2e8f0; border-radius: 4px; word-break: break-all; font-size: 0.85em; margin-top: 5px; min-height: 20px;}
         .badge { font-size: 10px; padding: 2px 6px; border-radius: 10px; margin-left: 5px; }
         .badge-ok { background: var(--success); color: white; }
+
+        input.correct { border-color: var(--success); background: #f0fdf4; }
+        input.wrong { border-color: var(--error); background: #fef2f2; }
     </style>
 </head>
 <body>
@@ -387,6 +390,15 @@
         event.currentTarget.classList.add('active');
     }
     function check(el, val) { el.className = (el.value == val) ? "correct" : "wrong"; }
+
+    function checkMath(mode) {
+        const m = BigInt(document.getElementById('m-val').innerText);
+        const n = 85n, e = 3n, d = 43n;
+        if(mode === 'enc') {
+            const input = document.getElementById('c-test');
+            input.className = (input.value == Number(m ** e % n)) ? "correct" : "wrong";
+        }
+    }
     function copy(id) { document.getElementById(id).select(); navigator.clipboard.writeText(document.getElementById(id).value); }
 </script>
 </body>
