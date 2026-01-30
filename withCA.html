@@ -19,10 +19,12 @@
 
         .section { display: none; }
         .section.active { display: block; }
-        .card { border: 1px solid #e2e8f0; padding: 20px; border-radius: 8px; margin-bottom: 20px; }
+        .card { border: 2px solid #e2e8f0; padding: 1.5rem; z-index: 1; box-shadow: 0 8px 24px rgba(0,0,0,0.1); border-radius: 8px; margin-bottom: 1.5rem; }
         .card-ca { border: 2px solid var(--ca-color); background: #fdfaff; }
-        
         .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        .card h3 { margin-top: 0; margin-bottom: 0.5rem; }
+        .card p { margin-top: 0; margin-bottom: 1rem; }
+
         textarea, select, input { padding: 10px; border: 2px solid #cbd5e1; border-radius: 6px; width: 100%; box-sizing: border-box; font-family: monospace; font-size: 13px; }
         
         .btn { background: var(--primary); color: white; border: none; padding: 12px; border-radius: 6px; cursor: pointer; font-weight: bold; margin-top: 5px; width: 100%; }
@@ -33,6 +35,8 @@
         .hash-box { background: #f8fafc; padding: 10px; border: 1px solid #e2e8f0; border-radius: 4px; word-break: break-all; font-size: 0.85em; margin-top: 5px; min-height: 20px;}
         .badge { font-size: 10px; padding: 2px 6px; border-radius: 10px; margin-left: 5px; }
         .badge-ok { background: var(--success); color: white; }
+
+        .divider {height: 2px; background: #ddd; margin: 1.5rem 0; }
 
         input.correct { border-color: var(--success); background: #f0fdf4; }
         input.wrong { border-color: var(--error); background: #fef2f2; }
@@ -61,8 +65,36 @@
                 <div><label>$N = p \cdot q$</label><input type="number" oninput="check(this, 85)"></div>
                 <div><label>$\Phi(N) = (p-1) \cdot (q-1)$</label><input type="number" oninput="check(this, 64)"></div>
             </div>
-            <p>Berechne $d$ für $e = 3$, so dass $(d \cdot 3) \mod 64 = 1$:</p>
-            <input type="number" id="rsa-d-val" oninput="check(this, 43)" placeholder="Geheimer Schlüssel d">
+        </div>
+
+        <div class="card">
+            <h3>Öffentlicher Exponent $e$ berechnen</h3>
+            <p>Wähle ein $e$, das zu $\Phi(N)$ teilerfremd ist (ggT($e$, $\Phi(N)$) = 1):</p>
+            <div class="grid">
+                <div>
+                    <label>Öffentlicher Exponent $e$:</label>
+                    <input type="number" id="rsa-e-val" placeholder="public key" oninput="validateE()">
+                    <small id="e-status"></small>
+                </div>
+                <div style="display: flex; align-items: flex-end;">
+                    <button class="btn btn-copy" onclick="checkE()">Validieren</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <h3>Geheimer Exponent $d$ berechnen</h3>
+            <p>Berechne $d$ so dass: $(e \cdot d) \mod \Phi(N) = 1$</p>
+            <div class="grid">
+                <div>
+                    <label>Geheimer Exponent $d$:</label>
+                    <input type="number" id="rsa-d-val" placeholder="Multiplikatives Inverses - private key" oninput="validateD()">
+                    <small id="d-status"></small>
+                </div>
+                <div style="display: flex; align-items: flex-end;">
+                    <button class="btn btn-copy" onclick="checkD()">Validieren</button>
+                </div>
+            </div>
         </div>
 
         <div class="card">
@@ -74,10 +106,15 @@
                     <p>ASCII-Wert $m = $ <b id="m-val">72</b></p>
                 </div>
                 <div>
-                    <label>Verschlüsseln ($m^3 \mod 85$):</label>
-                    <input type="number" id="c-test" placeholder="Ergebnis c">
-                    <button class="btn btn-copy" onclick="checkMath('enc')">Rechnung prüfen</button>
+                    <label>Verschlüsseln ($m^e \mod 85$):</label>
+                    <input type="number" id="c-test" placeholder="Ergebnis c" oninput="validateEncrypt()">
+                    <button class="btn btn-copy" onclick="checkEncrypt()">Rechnung prüfen</button>
                 </div>
+            </div>
+            <div style="margin-top: 15px; background: #f0f9ff; border-radius: 4px;">
+                <p><small>Entschlüsseln: Berechne $c^d \mod 85$</small></p>
+                <input type="number" id="m-decrypted" placeholder="Ergebnis sollte wieder der ASCII Wert deines Buchstabens sein" oninput="validateDecrypt()">
+                <button class="btn btn-copy" onclick="checkDecrypt()">Decryption prüfen</button>
             </div>
         </div>
     </div>
@@ -111,14 +148,24 @@
 
     <div id="ca" class="section">
         <h2>Schritt 3: Zertifizierungsstelle (CA-Amt)</h2>
+        <div class="bubble-wrapper">
+            <div class="card" style="margin-bottom:20px;">
+                <h3>Vertrauens-Check</h3>
+                <label>Aktueller CA-Key in meinem System:</label>
+                <textarea id="my-local-ca-key" placeholder="Hier den vertrauenswürdigen CA-Key einfügen (von der Zentrale erhalten)"></textarea>
+            </div>
+        </div>
+        <div class="divider"></div>
         <div class="grid">
             <div class="card card-ca">
                 <h3>CA Master-Setup</h3>
-                <p>Als Lehrer/Zentrale: Erzeuge den CA-Key, dem alle vertrauen müssen.</p>
+                <p>Als Zentrale: Erzeuge den CA-Key, dem alle vertrauen müssen.</p>
+                <p><small>Diesen Key müssen alle Korrespondenten kennen, um Zertifikate zu prüfen.</small></p>
                 <button class="btn btn-ca" onclick="genCAKeys()">CA-System initialisieren</button>
                 <label style="display:block; margin-top:10px;">CA Public Key (Root):</label>
                 <textarea id="ca-pub-display" readonly style="height: 50px;"></textarea>
-                <p><small>Diesen Key müssen alle Schüler kennen, um Zertifikate zu prüfen.</small></p>
+                <button class="btn btn-copy" onclick="copy('ca-pub-display')">Kopieren</button>
+                <p>Den CA Public Key hätten moderne Geräte bereits zum Auslieferungszeitpunkt abgespeichert und können sich so dessen Identität sicher sein.</p>
             </div>
             <div class="card">
                 <h3>Zertifikat ausstellen</h3>
@@ -127,13 +174,10 @@
                 <button class="btn" onclick="issueCertificate()">Zertifikat signieren</button>
                 <label style="display:block; margin-top:10px;">Resultat (Das Zertifikat):</label>
                 <textarea id="ca-cert-res" readonly style="height: 80px;"></textarea>
+                 <button class="btn btn-copy" onclick="copy('ca-cert-res')">Kopieren</button>
             </div>
         </div>
-        <div class="card" style="margin-top:20px;">
-            <h3>Vertrauens-Check</h3>
-            <label>Aktueller CA-Key in meinem System:</label>
-            <textarea id="my-local-ca-key" placeholder="Hier den vertrauenswürdigen CA-Key einfügen (von der Zentrale erhalten)"></textarea>
-        </div>
+        
     </div>
 
     <div id="alice" class="section">
@@ -217,6 +261,19 @@
             exp = exp / 2n;
         }
         return res;
+    }
+
+    // --- RSA HELPER FUNCTIONS ---
+    function gcd(a, b) {
+        while (b !== 0) { let t = b; b = a % b; a = t; }
+        return a;
+    }
+
+    function updateASCIITest() {
+        const char = document.getElementById('ascii-char').value;
+        if (char.length > 0) {
+            document.getElementById('m-val').innerText = char.charCodeAt(0);
+        }
     }
 
     // --- KEY GEN ---
@@ -308,6 +365,113 @@
         } catch(e) { alert("Fehler: " + e.message); }
     }
 
+    // --- RSA MATH VALIDATION ---
+    function validateE() {
+        const eVal = parseInt(document.getElementById('rsa-e-val').value);
+        const phi = 64;
+        if (!eVal || eVal < 2) {
+            document.getElementById('e-status').innerText = "";
+            return;
+        }
+        const g = gcd(eVal, phi);
+        if (g === 1) {
+            document.getElementById('e-status').innerHTML = "✅ teilerfremd";
+            document.getElementById('e-status').style.color = "green";
+        } else {
+            document.getElementById('e-status').innerHTML = "❌ ggT(" + eVal + ", 64) = " + g + " ≠ 1";
+            document.getElementById('e-status').style.color = "red";
+        }
+    }
+
+    function checkE() {
+        const eVal = parseInt(document.getElementById('rsa-e-val').value);
+        const phi = 64;
+        if (!eVal) return alert("Bitte e eingeben!");
+        const g = gcd(eVal, phi);
+        const el = document.getElementById('rsa-e-val');
+        el.className = (g === 1) ? "correct" : "wrong";
+    }
+
+    function validateD() {
+        const dVal = parseInt(document.getElementById('rsa-d-val').value);
+        const eVal = parseInt(document.getElementById('rsa-e-val').value);
+        const phi = 64;
+        if (!dVal || !eVal) {
+            document.getElementById('d-status').innerText = "";
+            return;
+        }
+        const check = (eVal * dVal) % phi;
+        if (check === 1) {
+            document.getElementById('d-status').innerHTML = "✅ Korrekt: (" + eVal + " · " + dVal + ") mod 64 = 1";
+            document.getElementById('d-status').style.color = "green";
+        } else {
+            document.getElementById('d-status').innerHTML = "❌ (" + eVal + " · " + dVal + ") mod 64 = " + check;
+            document.getElementById('d-status').style.color = "red";
+        }
+    }
+
+    function checkD() {
+        const dVal = parseInt(document.getElementById('rsa-d-val').value);
+        const eVal = parseInt(document.getElementById('rsa-e-val').value);
+        const phi = 64;
+        if (!dVal || !eVal) return alert("Bitte e und d eingeben!");
+        const check = (eVal * dVal) % phi;
+        const el = document.getElementById('rsa-d-val');
+        el.className = (check === 1) ? "correct" : "wrong";
+    }
+
+    function validateEncrypt() {
+        const m = BigInt(document.getElementById('m-val').innerText);
+        const eVal = BigInt(document.getElementById('rsa-e-val').value);
+        const cVal = BigInt(document.getElementById('c-test').value);
+        const n = 85n;
+        if (!eVal || !cVal) {
+            document.getElementById('c-test').className = "";
+            return;
+        }
+        const expected = powerMod(m, eVal, n);
+        document.getElementById('c-test').className = (cVal === expected) ? "correct" : "wrong";
+    }
+
+    function checkEncrypt() {
+        validateEncrypt();
+        const el = document.getElementById('c-test');
+        if (el.className === "correct") {
+            alert("✅ Verschlüsselung korrekt!");
+        } else if (el.className === "wrong") {
+            const m = BigInt(document.getElementById('m-val').innerText);
+            const e = BigInt(document.getElementById('rsa-e-val').value);
+            const expected = powerMod(m, e, 85n);
+            alert("❌ Falsch. Richtig: " + m + "^" + e + " mod 85 = " + expected);
+        }
+    }
+
+    function validateDecrypt() {
+        const cVal = BigInt(document.getElementById('c-test').value);
+        const dVal = BigInt(document.getElementById('rsa-d-val').value);
+        const mVal = BigInt(document.getElementById('m-decrypted').value);
+        const n = 85n;
+        if (!dVal || !cVal || !mVal) {
+            document.getElementById('m-decrypted').className = "";
+            return;
+        }
+        const expected = powerMod(cVal, dVal, n);
+        document.getElementById('m-decrypted').className = (mVal === expected) ? "correct" : "wrong";
+    }
+
+    function checkDecrypt() {
+        validateDecrypt();
+        const el = document.getElementById('m-decrypted');
+        if (el.className === "correct") {
+            alert("✅ Entschlüsselung korrekt!");
+        } else if (el.className === "wrong") {
+            const c = BigInt(document.getElementById('c-test').value);
+            const d = BigInt(document.getElementById('rsa-d-val').value);
+            const expected = powerMod(c, d, 85n);
+            alert("❌ Falsch. Richtig: " + c + "^" + d + " mod 85 = " + expected);
+        }
+    }
+
     // --- UI & CORE ACTIONS ---
     function updateKeyUI() {
         const drops = document.querySelectorAll('.key-drop');
@@ -391,14 +555,6 @@
     }
     function check(el, val) { el.className = (el.value == val) ? "correct" : "wrong"; }
 
-    function checkMath(mode) {
-        const m = BigInt(document.getElementById('m-val').innerText);
-        const n = 85n, e = 3n, d = 43n;
-        if(mode === 'enc') {
-            const input = document.getElementById('c-test');
-            input.className = (input.value == Number(m ** e % n)) ? "correct" : "wrong";
-        }
-    }
     function copy(id) { document.getElementById(id).select(); navigator.clipboard.writeText(document.getElementById(id).value); }
 </script>
 </body>
