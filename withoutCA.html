@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <title>RSA Krypto-Labor: Echt-Verschlüsselung</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+
+    <style>
+        :root { --primary: #2563eb; --bg: #f1f5f9; --success: #22c55e; --error: #ef4444; }
+        body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--bg); padding: 20px; color: #1e293b; }
+        .container { max-width: 1100px; margin: 0 auto; background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 25px rgba(0,0,0,0.1); }
+        
+        nav { display: flex; gap: 5px; margin-bottom: 25px; border-bottom: 2px solid #e2e8f0; }
+        nav button { padding: 12px 20px; border: none; background: none; cursor: pointer; font-weight: bold; color: #64748b; }
+        nav button.active { color: var(--primary); border-bottom: 3px solid var(--primary); background: #f8fafc; }
+
+        .section { display: none; }
+        .section.active { display: block; }
+        .card { border: 1px solid #e2e8f0; padding: 20px; border-radius: 8px; margin-bottom: 20px; }
+        
+        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        textarea, select, input { padding: 10px; border: 2px solid #cbd5e1; border-radius: 6px; width: 100%; box-sizing: border-box; font-family: monospace; }
+        
+        input.correct { border-color: var(--success); background: #f0fdf4; }
+        input.wrong { border-color: var(--error); background: #fef2f2; }
+
+        .btn { background: var(--primary); color: white; border: none; padding: 12px; border-radius: 6px; cursor: pointer; font-weight: bold; margin-top: 5px; width: 100%; }
+        .btn-black { background: #1e293b; }
+        .btn-copy { background: #64748b; font-size: 0.8em; width: auto; padding: 5px 10px; }
+        
+        .hash-box { background: #f8fafc; padding: 10px; border: 1px solid #e2e8f0; border-radius: 4px; word-break: break-all; font-size: 0.85em; margin-top: 5px; }
+        .status { font-weight: bold; margin-top: 10px; padding: 10px; border-radius: 4px; text-align: center; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <h1>Digitale Signatur & RSA Labor</h1>
+        <p>Experimentiere mit echter mathematischer Verschlüsselung.</p>
+    </header>
+    
+    <nav>
+        <button onclick="showS('math')" class="active">1. RSA Mathematik</button>
+        <button onclick="showS('keys')">2. Schlüssel-Zentrale</button>
+        <button onclick="showS('alice')">3. Alice (Senden)</button>
+        <button onclick="showS('bob')">4. Bob (Empfangen)</button>
+    </nav>
+
+    <div id="math" class="section active">
+        <h2>Schritt 1: Das mathematische Fundament</h2>
+        <div class="card">
+            <p>Berechne die RSA-Parameter für kleine Primzahlen ($p=5, q=17$):</p>
+            <div class="grid">
+                <div><label>$N = p \cdot q$</label><input type="number" oninput="check(this, 85)"></div>
+                <div><label>$\Phi(N) = (p-1) \cdot (q-1)$</label><input type="number" oninput="check(this, 64)"></div>
+            </div>
+            <p>Berechne $d$ für $e = 3$, so dass $(d \cdot 3) \mod 64 = 1$:</p>
+            <input type="number" id="rsa-d-val" oninput="check(this, 43)" placeholder="Geheimer Schlüssel d">
+        </div>
+
+        <div class="card">
+            <h3>ASCII-Test (Mathematisch)</h3>
+            <div class="grid">
+                <div>
+                    <label>Buchstabe wählen:</label>
+                    <input type="text" id="ascii-char" maxlength="1" value="H" oninput="updateASCIITest()">
+                    <p>ASCII-Wert $m = $ <b id="m-val">72</b></p>
+                </div>
+                <div>
+                    <label>Verschlüsseln ($m^3 \mod 85$):</label>
+                    <input type="number" id="c-test" placeholder="Ergebnis c">
+                    <button class="btn btn-copy" onclick="checkMath('enc')">Rechnung prüfen</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="keys" class="section">
+        <h2>Schritt 2: Schlüssel generieren (Echte RSA-Keys)</h2>
+        <div class="grid">
+            <div class="card">
+                <h3>Meine Identität</h3>
+                <button class="btn" onclick="generateRealKeys()">Neue Schlüssel generieren</button>
+                <label style="display:block; margin-top:10px;">Mein Public Key ($N, e$):</label>
+                <textarea id="my-pub-display" readonly style="height: 60px; font-size: 10px;"></textarea>
+                <button class="btn btn-copy" onclick="copy('my-pub-display')">Kopieren</button>
+                
+                <label style="display:block; margin-top:10px;">Mein Private Key ($N, d$):</label>
+                <textarea id="my-priv-display" readonly style="height: 60px; font-size: 10px;"></textarea>
+            </div>
+            <div class="card">
+                <h3>Adressbuch</h3>
+                <input type="text" id="contact-name" placeholder="Name">
+                <textarea id="contact-key" placeholder="Public Key hier einfügen..." style="height: 60px;"></textarea>
+                <button class="btn" onclick="saveContact()">Kontakt speichern</button>
+                <div id="contact-list" style="margin-top:10px;"></div>
+            </div>
+        </div>
+    </div>
+
+    <div id="alice" class="section">
+        <h2>Schritt 3: Nachricht senden (Alice)</h2>
+        <div class="grid">
+            <div class="card">
+                <h3>Eingabe</h3>
+                <label>Nachricht (max. 50 Zeichen für dieses Labor):</label>
+                <input type="text" id="a-msg" value="GEHEIM" maxlength="50">
+                
+                <label style="display:block; margin-top:10px;">1. Verschlüsseln mit (Public Key von):</label>
+                <select id="a-enc-key-select" class="key-drop"></select>
+
+                <label style="display:block; margin-top:10px;">2. Signieren mit (Private Key von):</label>
+                <select id="a-sig-key-select" class="key-drop"></select>
+
+                <button class="btn btn-black" onclick="aliceExecute()">Signieren & Verschlüsseln</button>
+            </div>
+            <div class="card">
+                <h3>Ergebnis (Paket)</h3>
+                <label>Verschlüsselte Nachricht (Cipher):</label>
+                <textarea id="a-out-cipher" readonly style="height: 80px;"></textarea>
+                <button class="btn btn-copy" onclick="copy('a-out-cipher')">Cipher kopieren</button>
+
+                <label style="display:block; margin-top:10px;">Digitale Signatur:</label>
+                <textarea id="a-out-sig" readonly style="height: 80px;"></textarea>
+                <button class="btn btn-copy" onclick="copy('a-out-sig')">Signatur kopieren</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="bob" class="section">
+        <h2>Schritt 4: Nachricht empfangen (Bob)</h2>
+        <div class="grid">
+            <div class="card">
+                <h3>Empfangene Daten</h3>
+                <textarea id="b-in-cipher" placeholder="Verschlüsselte Nachricht hier rein"></textarea>
+                
+                <label style="display:block; margin-top:10px;">Entschlüsseln mit Schlüssel:</label>
+                <select id="b-dec-key-select" class="key-drop"></select>
+                
+                <button class="btn" onclick="bobDecrypt()">Mathematisch Entschlüsseln</button>
+                
+                <div id="b-dec-output" class="hash-box" style="margin-top:15px; display:none; border: 2px solid var(--primary);">
+                    Ergebnis: <b id="b-plain-text"></b>
+                </div>
+            </div>
+            <div class="card">
+                <h3>Prüfung der Signatur</h3>
+                <textarea id="b-in-sig" placeholder="Signatur hier rein"></textarea>
+                
+                <label style="display:block; margin-top:10px;">Verifizieren mit Public Key von:</label>
+                <select id="b-ver-key-select" class="key-drop"></select>
+
+                <button class="btn btn-black" onclick="bobVerify()">Signatur prüfen</button>
+                <div id="b-sig-status" class="status" style="display:none;"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // --- ZUSTAND ---
+    let myIdentity = null; 
+    let contacts = {}; 
+
+    window.onload = () => {
+        renderMathInElement(document.body, { delimiters: [{left: "$$", right: "$$", display: true}, {left: "$", right: "$", display: false}] });
+        updateKeyUI();
+    };
+
+    // --- MATH LOGIC ---
+    function updateASCIITest() {
+        const char = document.getElementById('ascii-char').value;
+        document.getElementById('m-val').innerText = char ? char.charCodeAt(0) : "0";
+    }
+    function check(el, val) { el.className = (el.value == val) ? "correct" : "wrong"; }
+    function checkMath(mode) {
+        const m = BigInt(document.getElementById('m-val').innerText);
+        const n = 85n, e = 3n, d = 43n;
+        if(mode === 'enc') {
+            const input = document.getElementById('c-test');
+            input.className = (input.value == Number(m ** e % n)) ? "correct" : "wrong";
+        }
+    }
+
+    // --- ECHTE RSA KRYPTOGRAPHIE (BigInt Implementation) ---
+    // Wir nutzen BigInt für echte n, e, d Rechnungen, damit "falsche" Schlüssel Müll produzieren.
+    
+    async function generateRealKeys() {
+        // Wir nutzen SubtleCrypto nur zur sicheren Erzeugung, exportieren aber n, e, d für unsere BigInt-Logik
+        const pair = await crypto.subtle.generateKey(
+            { name: "RSASSA-PKCS1-v1_5", modulusLength: 1024, publicExponent: new Uint8Array([1, 0, 1]), hash: "SHA-256" },
+            true, ["sign", "verify"]
+        );
+        const jwkPub = await crypto.subtle.exportKey("jwk", pair.publicKey);
+        const jwkPriv = await crypto.subtle.exportKey("jwk", pair.privateKey);
+
+        myIdentity = {
+            name: "Ich",
+            n: b64ToBigInt(jwkPub.n),
+            e: b64ToBigInt(jwkPub.e),
+            d: b64ToBigInt(jwkPriv.d),
+            subtlePub: pair.publicKey,
+            subtlePriv: pair.privateKey
+        };
+
+        document.getElementById('my-pub-display').value = JSON.stringify({n: jwkPub.n, e: jwkPub.e});
+        document.getElementById('my-priv-display').value = JSON.stringify({n: jwkPub.n, d: jwkPriv.d});
+        updateKeyUI();
+    }
+
+    function b64ToBigInt(b64) {
+        const bin = atob(b64.replace(/-/g, '+').replace(/_/g, '/'));
+        let res = 0n;
+        for (let i = 0; i < bin.length; i++) res = (res << 8n) + BigInt(bin.charCodeAt(i));
+        return res;
+    }
+
+    function saveContact() {
+        const name = document.getElementById('contact-name').value;
+        const raw = document.getElementById('contact-key').value;
+        try {
+            const data = JSON.parse(raw);
+            contacts[name] = { n: b64ToBigInt(data.n), e: b64ToBigInt(data.e), raw: data };
+            updateKeyUI();
+        } catch(e) { alert("Ungültiges Schlüsselformat!"); }
+    }
+
+    function updateKeyUI() {
+        const drops = document.querySelectorAll('.key-drop');
+        let html = `<option value="">-- wählen --</option>`;
+        if(myIdentity) {
+            html += `<option value="my_pub">Ich (Public Key)</option>`;
+            html += `<option value="my_priv">Ich (Private Key)</option>`;
+        }
+        for(let name in contacts) html += `<option value="c_${name}">${name} (Public Key)</option>`;
+        
+        drops.forEach(d => d.innerHTML = html);
+        
+        const list = document.getElementById('contact-list');
+        list.innerHTML = "";
+        for(let name in contacts) list.innerHTML += `<div>👤 ${name}</div>`;
+    }
+
+    // --- HILFSFUNKTIONEN FÜR ECHTE RSA-RECHNUNG ---
+    function textToBigInt(text) {
+        let hex = "";
+        for (let i = 0; i < text.length; i++) hex += text.charCodeAt(i).toString(16).padStart(2, '0');
+        return BigInt("0x" + hex);
+    }
+
+    function bigIntToText(bigint) {
+        let hex = bigint.toString(16);
+        if (hex.length % 2 !== 0) hex = "0" + hex;
+        let str = "";
+        for (let i = 0; i < hex.length; i += 2) str += String.fromCharCode(parseInt(hex.substr(i, 2), 16));
+        return str;
+    }
+
+    function rsaMath(m, keyExp, keyMod) {
+        return powerMod(m, keyExp, keyMod);
+    }
+
+    function powerMod(base, exp, mod) {
+        let res = 1n;
+        base = base % mod;
+        while (exp > 0n) {
+            if (exp % 2n === 1n) res = (res * base) % mod;
+            base = (base * base) % mod;
+            exp = exp / 2n;
+        }
+        return res;
+    }
+
+    // --- AKTIONEN ---
+    async function aliceExecute() {
+        if(!myIdentity) return alert("Generiere erst deine Schlüssel!");
+        const msg = document.getElementById('a-msg').value;
+        const encKeyVal = document.getElementById('a-enc-key-select').value;
+        const sigKeyVal = document.getElementById('a-sig-key-select').value;
+
+        if(!encKeyVal || !sigKeyVal) return alert("Wähle beide Schlüssel!");
+
+        // 1. VERSCHLÜSSELN (Mathematisch mit dem gewählten Schlüssel)
+        let n, e;
+        if(encKeyVal === 'my_pub') { n = myIdentity.n; e = myIdentity.e; }
+        else if(encKeyVal === 'my_priv') { n = myIdentity.n; e = myIdentity.d; }
+        else { const c = contacts[encKeyVal.replace('c_','')]; n = c.n; e = c.e; }
+
+        const mBig = textToBigInt(msg);
+        const cipherBig = rsaMath(mBig, e, n);
+        document.getElementById('a-out-cipher').value = cipherBig.toString(16);
+
+        // 2. SIGNIEREN (Wir nutzen SubtleCrypto für die Signatur, um einen echten Hash-Standard zu zeigen)
+        const sigKey = sigKeyVal === 'my_priv' ? myIdentity.subtlePriv : null;
+        if(!sigKey) return alert("Du kannst nur mit deinem eigenen Private Key signieren!");
+        
+        const sigBuf = await crypto.subtle.sign("RSASSA-PKCS1-v1_5", sigKey, new TextEncoder().encode(msg));
+        document.getElementById('a-out-sig').value = btoa(String.fromCharCode(...new Uint8Array(sigBuf)));
+    }
+
+    function bobDecrypt() {
+        const hex = document.getElementById('b-in-cipher').value;
+        const keyVal = document.getElementById('b-dec-key-select').value;
+        if(!hex || !keyVal) return;
+
+        let n, d;
+        if(keyVal === 'my_priv') { n = myIdentity.n; d = myIdentity.d; }
+        else if(keyVal === 'my_pub') { n = myIdentity.n; d = myIdentity.e; }
+        else { const c = contacts[keyVal.replace('c_','')]; n = c.n; d = c.e; }
+
+        try {
+            const cipherBig = BigInt("0x" + hex);
+            const plainBig = rsaMath(cipherBig, d, n);
+            const plainText = bigIntToText(plainBig);
+            
+            document.getElementById('b-plain-text').innerText = plainText;
+            document.getElementById('b-dec-output').style.display = "block";
+        } catch(e) { alert("Mathematischer Fehler (Zahlen zu groß oder Format falsch)"); }
+    }
+
+    async function bobVerify() {
+        const msg = document.getElementById('b-plain-text').innerText;
+        const sigB64 = document.getElementById('b-in-sig').value;
+        const keyVal = document.getElementById('b-ver-key-select').value;
+        const status = document.getElementById('b-sig-status');
+
+        if(!msg || !sigB64 || !keyVal) return alert("Daten unvollständig!");
+
+        // Key importieren für SubtleCrypto
+        let pubKey;
+        try {
+            if(keyVal === 'my_pub') pubKey = myIdentity.subtlePub;
+            else {
+                const c = contacts[keyVal.replace('c_','')];
+                const buf = new Uint8Array(atob(c.raw.n.replace(/-/g, '+').replace(/_/g, '/')).split("").map(c => c.charCodeAt(0)));
+                // (Vereinfacht: Wir nutzen hier das gespeicherte Objekt)
+                pubKey = await crypto.subtle.importKey("jwk", {
+                    kty: "RSA", n: c.raw.n, e: c.raw.e, alg: "RS256", ext: true
+                }, { name: "RSASSA-PKCS1-v1_5", hash: "SHA-256" }, false, ["verify"]);
+            }
+
+            const sigBuf = new Uint8Array(atob(sigB64).split("").map(c => c.charCodeAt(0)));
+            const isValid = await crypto.subtle.verify("RSASSA-PKCS1-v1_5", pubKey, sigBuf, new TextEncoder().encode(msg));
+
+            status.style.display = "block";
+            status.innerText = isValid ? "✅ Signatur GÜLTIG" : "❌ Signatur UNGÜLTIG";
+            status.style.background = isValid ? "#dcfce7" : "#fee2e2";
+        } catch(e) { alert("Verifizierung fehlgeschlagen: " + e.message); }
+    }
+
+    function showS(id) {
+        document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+        document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
+        document.getElementById(id).classList.add('active');
+        event.currentTarget.classList.add('active');
+    }
+    function copy(id) { document.getElementById(id).select(); navigator.clipboard.writeText(document.getElementById(id).value); }
+</script>
+</body>
+</html>
